@@ -1,99 +1,44 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<meta name="description" content=" FILL ME IN ">
-	<meta name="author" content=" FILL ME IN ">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-	<title>Cats</title>
-</head>
-<body>
-	<header>
-		<h2>Cat Page</h2>
-	</header>
-	<div class="container">
-		<div id="list" style="width: 29%; background-color: #000; color: #FFF; display: inline-block; vertical-align: top;">
-			<ul id="catList">
-			</ul>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<meta name="description" content=" FILL ME IN ">
+		<meta name="author" content=" FILL ME IN ">
+		<link rel="stylesheet" href="css/style.min.css">
+		<style type="text/css">
+	      html, body { height: 100%; margin: 0; padding: 0; }
+	      #map { width: 100%; height: 80%;}
+	    </style>
+		<title>Google Map - List Project</title>
+	</head>
+	<body>
+		<div class="grid">
+			<div class="grid__item one-whole">
+				<header>
+					<h2>
+						Google Map - Frontend Project
+					</h2>
+				</header>
+			</div>
 		</div>
-		<div id="content" style="width: 69%; background-color: #FFF; color: #000; display: inline-block;">
-				Content text.
+		<div id="map">
 		</div>
-		<footer>
-			<p>All part of P5</p>
-		</footer>
-	</div>
-	<script type="text/javascript">
-		$(function(){
+		<script type="text/javascript">
 
-		    var model = {
-		        cats: [
-					{
-						name: "Fluffy",
-						image: "https://pbs.twimg.com/profile_images/551143684671291392/Nx_lx21L_400x400.jpeg",
-						count: 0
-					},
-					{
-						name: "Sleepy",
-						image: "https://people.rit.edu/~bmd6715/230/exercises/images/cat.png",
-						count: 0
-					},
-					{
-						name: "Angry",
-						image: "http://i.kinja-img.com/gawker-media/image/upload/s--XxeU3pwd--/efg4piwisx1tcco4byit.png",
-						count: 0
-					}
-				],
-		        add: function(obj) {
-		            var data = JSON.parse(localStorage.cats);
-		            data.push(obj);
-		            localStorage.cats = JSON.stringify(data);
-		        },
-		        getAllCats: function() {
-		            return localStorage.cats;
-		        }
-		    };
+			var map;
+			function initMap() {
+			  map = new google.maps.Map(document.getElementById('map'), {
+			    center: {lat: 51.514573, lng: -0.127846},
+			    zoom: 15
+			  });
+			}
 
-
-		    var octopus = {
-		        changeCat: function() {
-		            model.add({
-		                name: catName,
-		                image: catImage,
-		                count: catCount
-		            });
-		            view.render();
-		        },
-
-		        getCats: function() {
-		            return model.getAllCats();
-		        },
-
-		        init: function() {
-		            view.init();
-		        }
-		    };
-
-
-		    var view = {
-		        init: function() {
-		            this.catList = $('#catList');
-		            this.numberOfCats = model.cats.length;
-		            for (var i = 0; i < this.numberOfCats; i++){
-	            		this.catList.append("<li style='list-style: none; font-weight: bold; padding: 5px;'><div id=" + model.cats[i].name + ">" + model.cats[i].name + "</div></li>");
-		            };
-		            this.catView = $('#content');
-		            view.render();
-		        },
-		        render: function(){
-		            
-		        }
-		    };
-
-		    octopus.init();
-		});
-	</script>
+	    </script>
+	    <script async defer
+	      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnwwM8rOgez8me2UkrkNnPPj65-1gQrFU&callback=initMap">
+	    </script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	</body>
 </html>
