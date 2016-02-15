@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="description" content=" FILL ME IN ">
+	<meta name="author" content=" FILL ME IN ">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<title>Cats</title>
+</head>
+<body>
+	<header>
+		<h2>Cat Page</h2>
+	</header>
+	<div class="container">
+		<div id="list" style="width: 29%; background-color: #000; color: #FFF; display: inline-block; vertical-align: top;">
+			<ul id="catList">
+			</ul>
+		</div>
+		<div id="content" style="width: 69%; background-color: #FFF; color: #000; display: inline-block;">
+				Content text.
+		</div>
+		<footer>
+			<p>All part of P5</p>
+		</footer>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+
+		    var model = {
+		        cats: [
+					{
+						name: "Fluffy",
+						image: "https://pbs.twimg.com/profile_images/551143684671291392/Nx_lx21L_400x400.jpeg",
+						count: 0
+					},
+					{
+						name: "Sleepy",
+						image: "https://people.rit.edu/~bmd6715/230/exercises/images/cat.png",
+						count: 0
+					},
+					{
+						name: "Angry",
+						image: "http://i.kinja-img.com/gawker-media/image/upload/s--XxeU3pwd--/efg4piwisx1tcco4byit.png",
+						count: 0
+					}
+				],
+		        add: function(obj) {
+		            var data = JSON.parse(localStorage.cats);
+		            data.push(obj);
+		            localStorage.cats = JSON.stringify(data);
+		        },
+		        getAllCats: function() {
+		            return localStorage.cats;
+		        }
+		    };
+
+
+		    var octopus = {
+		        changeCat: function() {
+		            model.add({
+		                name: catName,
+		                image: catImage,
+		                count: catCount
+		            });
+		            view.render();
+		        },
+
+		        getCats: function() {
+		            return model.getAllCats();
+		        },
+
+		        init: function() {
+		            view.init();
+		        }
+		    };
+
+
+		    var view = {
+		        init: function() {
+		            this.catList = $('#catList');
+		            this.numberOfCats = model.cats.length;
+		            for (var i = 0; i < this.numberOfCats; i++){
+	            		this.catList.append("<li style='list-style: none; font-weight: bold; padding: 5px;'><div id=" + model.cats[i].name + ">" + model.cats[i].name + "</div></li>");
+		            };
+		            this.catView = $('#content');
+		            view.render();
+		        },
+		        render: function(){
+		            
+		        }
+		    };
+
+		    octopus.init();
+		});
+	</script>
+	</body>
+</html>
