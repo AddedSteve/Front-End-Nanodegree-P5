@@ -2,6 +2,7 @@
 (function () {
 
     var map;
+    var markers = [];
 
     function initMap () {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -207,10 +208,11 @@
         this.todos.push(new Todo("Book Store", false, [51.514024, -0.129822], 'D'));
         this.todos.push(new Todo("Bar", false, [51.515300, -0.129249], 'E'));
 
+        var marker;
 
         this.filteredTodos().forEach(function (todo) {
             // set even if value is the same, as subscribers are not notified in that case
-            var marker = new google.maps.Marker({
+            marker = new google.maps.Marker({
                 position: {lat: todo.position()[0], lng: todo.position()[1]},
                 label: todo.label(),
                 map: map,
@@ -223,7 +225,7 @@
           if (marker.getAnimation() !== null) {
             marker.setAnimation(null);
           } else {
-            marker.setAnimation(google.maps.Animation.BOUNCE);
+            markers.setAnimation(google.maps.Animation.BOUNCE);
           }
         }
        
