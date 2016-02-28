@@ -15,6 +15,9 @@
 	      }
 	      h3 { text-align: center; padding-top: 10px;}
 	    </style>
+	    <script
+	      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnwwM8rOgez8me2UkrkNnPPj65-1gQrFU">
+	    </script>
 		<title>Google Map - List Project</title>
 	</head>
 	<body>
@@ -33,61 +36,15 @@
 			<div class="grid__item two-tenths" id="UI">
 				<h3>Local Attractions</h3>
 				<ul id="todo-list" data-bind="foreach: filteredTodos">
+					<li>
+						<hr width="80%">
+					</li>
 					<li data-bind="css: { completed: completed, editing: editing }">
 						<p class="edit" data-bind="text: title, valueUpdate: 'afterkeydown', enterKey: $root.saveEditing, escapeKey: $root.cancelEditing, selectAndFocus: editing, event: { blur: $root.saveEditing }"></p>
 					</li>
 				</ul>
 			</div>
 		</div>
-		<script type="text/javascript">
-
-			var map;
-		    function initMap() {
-		      map = new google.maps.Map(document.getElementById('map'), {
-		        center: {lat: 51.514573, lng: -0.127846},
-		        zoom: 15
-		      });
-
-		      var marker = new google.maps.Marker({
-		        position: {lat: 51.519879, lng: -0.122544},
-		        label: "A",
-		        map: map,
-		        title: 'Hello World!'
-		      });
-
-		      var marker2 = new google.maps.Marker({
-		        position: {lat: 51.514270, lng: -0.141909},
-		        label: "B",
-		        map: map,
-		        title: 'Hello World!'
-		      });
-
-		      var marker3 = new google.maps.Marker({
-		        position: {lat: 51.516785, lng: -0.141403},
-		        label: "C",
-		        map: map,
-		        title: 'Hello World!'
-		      });
-
-		      var marker2 = new google.maps.Marker({
-		        position: {lat: 51.514024, lng: -0.129822},
-		        label: "D",
-		        map: map,
-		        title: 'Hello World!'
-		      });
-
-		      var marker2 = new google.maps.Marker({
-		        position: {lat: 51.515300, lng: -0.129249},
-		        label: "E",
-		        map: map,
-		        title: 'Hello World!'
-		      });
-		    } 
-
-	    </script>
-	    <script async defer
-	      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnwwM8rOgez8me2UkrkNnPPj65-1gQrFU&callback=initMap">
-	    </script>
 	    <script src="node_modules/todomvc-common/base.js"></script>
 		<script src="node_modules/knockout/build/output/knockout-latest.js"></script>
 		<script src="node_modules/director/build/director.js"></script>

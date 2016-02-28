@@ -1,6 +1,20 @@
 /*global ko, Router */
 (function () {
 
+    var map;
+
+    function initMap () {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 51.514573, lng: -0.127846},
+        zoom: 15
+      });
+
+      
+    }
+
+    window.onload = initMap();
+
+    
 
     'use strict';
 
@@ -58,10 +72,11 @@
     };
 
     // represent a single todo item
-    var Todo = function (title, completed, position) {
+    var Todo = function (title, completed, position, label) {
         this.title = ko.observable(title);
         this.completed = ko.observable(completed);
-        this.position = ko.observableArray([]);
+        this.position = ko.observableArray(position);
+        this.label = ko.observable(label);
         this.editing = ko.observable(false);
     };
 
@@ -186,19 +201,71 @@
             rateLimit: { timeout: 500, method: 'notifyWhenChangesStop' }
         }); // save at most twice per second
 
-        this.todos.push(new Todo("Bowling", false, [51.519879, 0.122544]));
-        this.todos.push(new Todo("Computer Store", false, [51.514270, -0.141909]));
-        this.todos.push(new Todo("Pub", false, [51.516785, -0.141403]));
-        this.todos.push(new Todo("Book Store", false, [51.514024, -0.129822]));
-        this.todos.push(new Todo("Bar", false, [51.515300, -0.129249]));
+        this.todos.push(new Todo("Bowling", false, [51.519879, -0.122544], 'A'));
+        this.todos.push(new Todo("Computer Store", true, [51.514270, -0.141909], 'B'));
+        this.todos.push(new Todo("Pub", false, [51.516785, -0.141403], 'C'));
+        this.todos.push(new Todo("Book Store", false, [51.514024, -0.129822], 'D'));
+        this.todos.push(new Todo("Bar", false, [51.515300, -0.129249], 'E'));
 
-        
+
+        this.filteredTodos().forEach(function (todo) {
+            // set even if value is the same, as subscribers are not notified in that case
+            var marker = new google.maps.Marker({
+                position: {lat: todo.position()[0], lng: todo.position()[1]},
+                label: todo.label(),
+                map: map,
+                title: 'Hello World!'
+            });
+            marker.addListener('click', toggleBounce);
+        });
+
+        function toggleBounce() {
+          if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+          } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        }
+       
+      //   var marker = new google.maps.Marker({
+      //   position: {lat: this.todos.length, lng: this.todos.length},
+      //   label: "A",
+      //   map: map,
+      //   title: 'Hello World!'
+      // });
+
+      // var marker2 = new google.maps.Marker({
+      //   position: {lat: 51.514270, lng: -0.141909},
+      //   label: "B",
+      //   map: map,
+      //   title: 'Hello World!'
+      // });
+
+      // var marker3 = new google.maps.Marker({
+      //   position: {lat: 51.516785, lng: -0.141403},
+      //   label: "C",
+      //   map: map,
+      //   title: 'Hello World!'
+      // });
+
+      // var marker2 = new google.maps.Marker({
+      //   position: {lat: 51.514024, lng: -0.129822},
+      //   label: "D",
+      //   map: map,
+      //   title: 'Hello World!'
+      // });
+
+      // var marker2 = new google.maps.Marker({
+      //   position: {lat: 51.515300, lng: -0.129249},
+      //   label: "E",
+      //   map: map,
+      //   title: 'Hello World!'
+      // });
     };
 
     // check local storage for todos
     // var todos = ko.utils.parseJson(localStorage.getItem('todos-knockoutjs'));
     var todos = [];
-
 
     // bind a new instance of our view model to the page
     var viewModel = new ViewModel(todos || []);
