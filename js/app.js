@@ -72,8 +72,8 @@
         }
     };
 
-    // represent a single todo item
-    var Todo = function (title, completed, position, label) {
+    // represent a single Location item
+    var Location = function (title, completed, position, label) {
         this.title = ko.observable(title);
         this.completed = ko.observable(completed);
         this.position = ko.observableArray(position);
@@ -82,51 +82,51 @@
     };
 
     // our main view model
-    var ViewModel = function (todos) {
+    var ViewModel = function (Locations) {
 
-        // map array of passed in todos to an observableArray of Todo objects
-        this.todos = ko.observableArray(todos.map(function (todo) {
-            return new Todo(todo.title, todo.completed);
+        // map array of passed in Locations to an observableArray of Location objects
+        this.Locations = ko.observableArray(Locations.map(function (Location) {
+            return new Location(Location.title, Location.completed);
         }));
 
-        // store the new todo value being entered
+        // store the new Location value being entered
         this.current = ko.observable();
 
         this.showMode = ko.observable('all');
 
-        this.filteredTodos = ko.computed(function () {
+        this.filteredLocations = ko.computed(function () {
             switch (this.showMode()) {
             case 'active':
-                return this.todos().filter(function (todo) {
-                    return !todo.completed();
+                return this.Locations().filter(function (Location) {
+                    return !Location.completed();
                 });
             case 'completed':
-                return this.todos().filter(function (todo) {
-                    return todo.completed();
+                return this.Locations().filter(function (Location) {
+                    return Location.completed();
                 });
             default:
-                return this.todos();
+                return this.Locations();
             }
         }.bind(this));
 
-        // add a new todo, when enter key is pressed
+        // add a new Location, when enter key is pressed
         this.add = function () {
             var current = this.current().trim();
             if (current) {
-                this.todos.push(new Todo(current));
+                this.Locations.push(new Location(current));
                 this.current('');
             }
         }.bind(this);
 
-        // remove a single todo
-        this.remove = function (todo) {
-            this.todos.remove(todo);
+        // remove a single Location
+        this.remove = function (Location) {
+            this.Locations.remove(Location);
         }.bind(this);
 
-        // remove all completed todos
+        // remove all completed Locations
         this.removeCompleted = function () {
-            this.todos.remove(function (todo) {
-                return todo.completed();
+            this.Locations.remove(function (Location) {
+                return Location.completed();
             });
         }.bind(this);
 
@@ -161,29 +161,29 @@
             item.title(item.previousTitle);
         }.bind(this);
 
-        // count of all completed todos
+        // count of all completed Locations
         this.completedCount = ko.computed(function () {
-            return this.todos().filter(function (todo) {
-                return todo.completed();
+            return this.Locations().filter(function (Location) {
+                return Location.completed();
             }).length;
         }.bind(this));
 
-        // count of todos that are not complete
+        // count of Locations that are not complete
         this.remainingCount = ko.computed(function () {
-            return this.todos().length - this.completedCount();
+            return this.Locations().length - this.completedCount();
         }.bind(this));
 
         // writeable computed observable to handle marking all complete/incomplete
         this.allCompleted = ko.computed({
-            //always return true/false based on the done flag of all todos
+            //always return true/false based on the done flag of all Locations
             read: function () {
                 return !this.remainingCount();
             }.bind(this),
-            // set all todos to the written value (true/false)
+            // set all Locations to the written value (true/false)
             write: function (newValue) {
-                this.todos().forEach(function (todo) {
+                this.Locations().forEach(function (Location) {
                     // set even if value is the same, as subscribers are not notified in that case
-                    todo.completed(newValue);
+                    Location.completed(newValue);
                 });
             }.bind(this)
         });
@@ -193,84 +193,78 @@
             return ko.utils.unwrapObservable(count) === 1 ? 'item' : 'items';
         }.bind(this);
 
-        // internal computed observable that fires whenever anything changes in our todos
+        // internal computed observable that fires whenever anything changes in our Locations
         ko.computed(function () {
             // store a clean copy to local storage, which also creates a dependency on
             // the observableArray and all observables in each item
-            localStorage.setItem('todos-knockoutjs', ko.toJSON(this.todos));
+            localStorage.setItem('Locations-knockoutjs', ko.toJSON(this.Locations));
         }.bind(this)).extend({
             rateLimit: { timeout: 500, method: 'notifyWhenChangesStop' }
         }); // save at most twice per second
 
-        this.todos.push(new Todo("Bowling", false, [51.519879, -0.122544], 'A'));
-        this.todos.push(new Todo("Computer Store", true, [51.514270, -0.141909], 'B'));
-        this.todos.push(new Todo("Pub", false, [51.516785, -0.141403], 'C'));
-        this.todos.push(new Todo("Book Store", false, [51.514024, -0.129822], 'D'));
-        this.todos.push(new Todo("Bar", false, [51.515300, -0.129249], 'E'));
+        this.Locations.push(new Location("All Star Lanes", true, [51.519879, -0.122544], 'A'));
+        this.Locations.push(new Location("Apple Store", false, [51.514270, -0.141909], 'B'));
+        this.Locations.push(new Location("The Cock Tavern", true, [51.516785, -0.141403], 'C'));
+        this.Locations.push(new Location("Foles", false, [51.514024, -0.129822], 'D'));
+        this.Locations.push(new Location("Bar", true, [51.515300, -0.129249], 'E'));
 
-        var marker;
+        var contentString = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+              '<div id="bodyContent">'+
+              '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+              'sandstone rock formation in the southern part of the '+
+              'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+              'south west of the nearest large town, Alice Springs; 450&#160;km '+
+              '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+              'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+              'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+              'Aboriginal people of the area. It has many springs, waterholes, '+
+              'rock caves and ancient paintings. Uluru is listed as a World '+
+              'Heritage Site.</p>'+
+              '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+              'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+              '(last visited June 22, 2009).</p>'+
+              '</div>'+
+              '</div>';
 
-        this.filteredTodos().forEach(function (todo) {
+          
+
+        this.filteredLocations().forEach(function (Location) {
             // set even if value is the same, as subscribers are not notified in that case
-            marker = new google.maps.Marker({
-                position: {lat: todo.position()[0], lng: todo.position()[1]},
-                label: todo.label(),
+            var marker = new google.maps.Marker({
+                position: {lat: Location.position()[0], lng: Location.position()[1]},
+                label: Location.label(),
                 map: map,
+                animation: google.maps.Animation.DROP,
                 title: 'Hello World!'
             });
-            marker.addListener('click', toggleBounce);
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            marker.addListener('click', function toggleBounce() {
+              infowindow.open(map, marker);
+              if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
+              } else {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function(){ marker.setAnimation(null); }, 750);
+              }
+            });
         });
 
-        function toggleBounce() {
-          if (marker.getAnimation() !== null) {
-            marker.setAnimation(null);
-          } else {
-            markers.setAnimation(google.maps.Animation.BOUNCE);
-          }
-        }
-       
-      //   var marker = new google.maps.Marker({
-      //   position: {lat: this.todos.length, lng: this.todos.length},
-      //   label: "A",
-      //   map: map,
-      //   title: 'Hello World!'
-      // });
-
-      // var marker2 = new google.maps.Marker({
-      //   position: {lat: 51.514270, lng: -0.141909},
-      //   label: "B",
-      //   map: map,
-      //   title: 'Hello World!'
-      // });
-
-      // var marker3 = new google.maps.Marker({
-      //   position: {lat: 51.516785, lng: -0.141403},
-      //   label: "C",
-      //   map: map,
-      //   title: 'Hello World!'
-      // });
-
-      // var marker2 = new google.maps.Marker({
-      //   position: {lat: 51.514024, lng: -0.129822},
-      //   label: "D",
-      //   map: map,
-      //   title: 'Hello World!'
-      // });
-
-      // var marker2 = new google.maps.Marker({
-      //   position: {lat: 51.515300, lng: -0.129249},
-      //   label: "E",
-      //   map: map,
-      //   title: 'Hello World!'
-      // });
+        
     };
 
-    // check local storage for todos
-    // var todos = ko.utils.parseJson(localStorage.getItem('todos-knockoutjs'));
-    var todos = [];
+    // check local storage for Locations
+    // var Locations = ko.utils.parseJson(localStorage.getItem('Locations-knockoutjs'));
+    var Locations = [];
 
     // bind a new instance of our view model to the page
-    var viewModel = new ViewModel(todos || []);
+    var viewModel = new ViewModel(Locations || []);
     ko.applyBindings(viewModel);
 
     // set up filter routing

@@ -7,14 +7,7 @@
 		<meta name="description" content=" FILL ME IN ">
 		<meta name="author" content=" FILL ME IN ">
 		<link rel="stylesheet" href="css/style.min.css">
-		<style type="text/css">
-	      html, body { height: 100%; margin: 0; padding: 0; }
-	      #map { width: 80%; height: 80%; float: right;}
-	      #UI { position: absolute; top: 71px; left: 0px; z-index: 99; 
-	      		background-color: #336699; color: #FFF; widt: 30%;
-	      }
-	      h3 { text-align: center; padding-top: 10px;}
-	    </style>
+
 	    <script
 	      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnwwM8rOgez8me2UkrkNnPPj65-1gQrFU">
 	    </script>
@@ -30,22 +23,41 @@
 				</header>
 			</div>
 		</div>
-		<div id="map">
-		</div>
 		<div class="grid">
-			<div class="grid__item two-tenths" id="UI">
+			<div class="grid__item one-whole palm-one-whole" id="UI">
 				<h3>Local Attractions</h3>
-				<ul id="todo-list" data-bind="foreach: filteredTodos">
+				<ul id="Location-list" data-bind="foreach: filteredLocations">
 					<li>
-						<hr width="80%">
+						|
 					</li>
 					<li data-bind="css: { completed: completed, editing: editing }">
-						<p class="edit" data-bind="text: title, valueUpdate: 'afterkeydown', enterKey: $root.saveEditing, escapeKey: $root.cancelEditing, selectAndFocus: editing, event: { blur: $root.saveEditing }"></p>
+						<span class="edit" data-bind="text: title, valueUpdate: 'afterkeydown', enterKey: $root.saveEditing, escapeKey: $root.cancelEditing, selectAndFocus: editing, event: { blur: $root.saveEditing }"></span>
+					</li>
+				</ul>
+				<ul id="Location-list-end">
+					<li>
+						|
+					</li>
+				</ul>
+
+				<ul id="filters">
+					<li>
+						<a data-bind="css: { selected: showMode() == 'all' }" href="#/all">All</a>
+					</li>
+					<li>
+						<a data-bind="css: { selected: showMode() == 'active' }" href="#/active">Stores</a>
+					</li>
+					<li>
+						<a data-bind="css: { selected: showMode() == 'completed' }" href="#/completed">Bars</a>
 					</li>
 				</ul>
 			</div>
 		</div>
-	    <script src="node_modules/todomvc-common/base.js"></script>
+
+		<div id="map">
+		</div>
+
+	    <script src="node_modules/Locationmvc-common/base.js"></script>
 		<script src="node_modules/knockout/build/output/knockout-latest.js"></script>
 		<script src="node_modules/director/build/director.js"></script>
 	    <script src="js/app.js"></script>
