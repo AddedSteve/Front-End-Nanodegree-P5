@@ -3,21 +3,48 @@ var markers = [];
 var clientID = "IQDJFYLUCO1UJ45322HIZZOVQWAQCEJ5NQHWP30X4IJ0RL5G";
 var clientSecret = "2DWL5WIZLGY44PN54M5CC0WUN0FD1OA1ULJYO0N322B5AXYV";
 
+var cityData = [];
+
 var config = {
     apiKey: 'IQDJFYLUCO1UJ45322HIZZOVQWAQCEJ5NQHWP30X4IJ0RL5G',
     authUrl: 'https://foursquare.com/',
     apiUrl: 'https://api.foursquare.com/'
   };
 
-  $.getJSON('https://api.foursquare.com/v2/venues/search?ll=40.7,-74' +
-    '&query=mcdonalds&client_id=' + clientID + 
-    '&client_secret=' + clientSecret + '&v=20120101',
+// $.getJSON('https://api.foursquare.com/v2/venues/search?ll=40.7,-74' +
+//     '&query=mcdonalds&client_id=' + clientID + 
+//     '&client_secret=' + clientSecret,
 
-    function(data) {
-        $.each(data.response.venues, function(i,venues){
-            console.log(venues.name);
-       });
-});
+//     function(data) {
+//         $.each(data.response.venues, function(i,venues){
+//             console.log(venues.name);
+//        });
+// });
+
+var foursquare = function (data, callback) {
+    //foursqaure
+    var clientId = "IQDJFYLUCO1UJ45322HIZZOVQWAQCEJ5NQHWP30X4IJ0RL5G";
+    var clientSecret = "2DWL5WIZLGY44PN54M5CC0WUN0FD1OA1ULJYO0N322B5AXYV";
+    var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=51.45889,0.13946&query=" + 
+    data.title() + "&client_id=" + clientId + '&client_secret=' + clientSecret + "&v=20160309";
+    //    console.log(foursquareUrl);
+       // console.log(data);
+
+    $.ajax({
+        url: foursquareUrl,
+        dataType: 'json',
+        data: "",
+        success: function (data) {
+            callback(null, data);
+        },
+        error: function (e) {
+            //here we are handling errors incase foursquare fails
+            callback(e);
+            alert("failed to load foursquare");
+        }
+    });
+
+};
 
 function initMap () {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -35,14 +62,15 @@ var Location = function (title, position, label) {
     this.title = ko.observable(title);
     this.position = ko.observableArray(position);
     this.label = ko.observable(label);
+    this.cityLocation = "tbd";
 };
 
 var Locations = [
     new Location("All Star Lanes", [51.519879, -0.122544]),
     new Location("Apple Store", [51.514270, -0.141909]),
     new Location("The Cock Tavern", [51.516785, -0.141403]),
-    new Location("Foles", [51.514024, -0.129822]),
-    new Location("Bar", [51.515300, -0.129249])
+    new Location("Foyles Book Store", [51.514024, -0.129822]),
+    new Location("Hamleys", [51.513423, -0.140100])
 ];
 
 // our main view model
@@ -72,28 +100,49 @@ var viewModel = {
     applyMarkers: function(filteredLocations) {
 
         viewModel.filteredLocations().forEach(function (Location) {
+            var self = Location;
         // set even if value is the same, as subscribers are not notified in that case
-            var marker = new google.maps.Marker({
+            self.marker = new google.maps.Marker({
                 position: {lat: Location.position()[0], lng: Location.position()[1]},
                 map: map,
                 animation: google.maps.Animation.DROP,
                 title: 'Hello World!'
             });
 
-            var infowindow = new google.maps.InfoWindow({
-                content: viewModel.contentString
+            self.infowindow = new google.maps.InfoWindow({
+                  content: 'tbd'
             });
 
-            marker.addListener('click', function toggleBounce() {
-              infowindow.open(map, marker);
-              if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
+            foursquare(self, function (e, data){
+
+                if (e) {
+                    alert("foursquare failed");
+                } else {
+                    // cityForLocation
+                    self.infowindow.setContent('<div id="content">'+
+                      '<div id="siteNotice">'+
+                      '</div>'+
+                      '<h1 id="firstHeading" class="firstHeading">' + self.title() + '</h1>'+
+                      '<div id="bodyContent">'+
+                      '<p><b>' + self.title() + '</b> is located in <b>' + data.response.venues[0].location.city + '</b></p>'+
+                      '<p>Data gathered from: <a href="https://foursquare.com/">'+
+                      'Foursquare</a> '+
+                      '</div>'+
+                      '</div>');
+                }
+            });
+            // console.log(cityForLocation);
+
+            self.marker.addListener('click', function toggleBounce() {
+              self.infowindow.open(map, self.marker);
+              if (self.marker.getAnimation() !== null) {
+                self.marker.setAnimation(null);
               } else {
-                marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(function(){ marker.setAnimation(null); }, 750);
+                self.marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function(){ self.marker.setAnimation(null); }, 750);
               }
             });
-            viewModel.filteredMarkers().push(marker);
+            viewModel.filteredMarkers().push(self.marker);
         })
         viewModel.setMapOnAll(map);
     },
