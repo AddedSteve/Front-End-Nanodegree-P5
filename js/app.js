@@ -1,5 +1,6 @@
 var map;
 var markers = [];
+var infowindows = [];
 
 // Declare function which will be used to interact with Foursquare API to retrieve third-party Location information.
 var fetchFourSquareInfo = function (data, callback) {
@@ -30,8 +31,16 @@ function initMap () {
     center: {lat: 51.514573, lng: -0.127846},
     zoom: 15
   });
+
+  // Initialise the ViewModel and Knockout bindings.
+  ko.applyBindings(viewModel);
+  viewModel.query.subscribe(viewModel.search);
+  viewModel.applyMarkers(viewModel.filteredLocations());
 }
-window.onload = initMap();
+
+var maperror = function () {
+    alert("Failed to load Google map.");
+};
 
 // Represent a single Location item with title, position, label, and prepare a variable for City information.
 var Location = function (title, position, label) {
@@ -58,6 +67,7 @@ var viewModel = {
     // Initially, no filter is applied.
     filteredLocations: ko.observableArray(Locations.slice()),
     filteredMarkers: ko.observableArray(),
+    filteredWindows: ko.observableArray(),
     query: ko.observable(''),
 
     // Create Search functionality to update the filteredlocations depending on values in Input.
@@ -124,7 +134,7 @@ var viewModel = {
               }
             });
             viewModel.filteredMarkers().push(self.marker);
-            
+            viewModel.filteredWindows().push(self.infowindow);
         })
         viewModel.setMapOnAll(map);
     },
@@ -132,7 +142,11 @@ var viewModel = {
     // If a list item element is clicked, animate the related map marker.
     listClickAction: function (i) {
         viewModel.filteredLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(function(){ viewModel.filteredLocations()[i].marker.setAnimation(null); }, 750);
+        viewModel.filteredWindows()[i].open(map, viewModel.filteredMarkers()[i]);
+        setTimeout(function(){ 
+            viewModel.filteredLocations()[i].marker.setAnimation(null); 
+            viewModel.filteredWindows()[i].close();
+        }, 2000);
     },
 
     // Apply all created map markers to the Google map initialised in the webpage.
@@ -143,10 +157,3 @@ var viewModel = {
         }
     }
 };
-
-// Initialise the ViewModel and Knockout bindings.
-viewModel.query.subscribe(viewModel.search);
-
-viewModel.applyMarkers(viewModel.filteredLocations());
-
-ko.applyBindings(viewModel);

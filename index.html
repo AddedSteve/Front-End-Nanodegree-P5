@@ -8,8 +8,8 @@
 		<meta name="author" content=" FILL ME IN ">
 		<link rel="stylesheet" href="css/style.min.css">
 
-	    <script
-	      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnwwM8rOgez8me2UkrkNnPPj65-1gQrFU">
+	    <script async defer onerror="mapError" 
+	      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnwwM8rOgez8me2UkrkNnPPj65-1gQrFU&callback=initMap">
 	    </script>
 		<title>Google Map - List Project</title>
 	</head>
@@ -28,18 +28,10 @@
 				<h3>Search Locations</h3>
 				<input placeholder="Search…" type="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" class="palm-one-whole lap-one-whole">
 				<ul id="Location-list" data-bind="foreach: filteredLocations">
-					<!-- <li>
-						|
-					</li> -->
 					<li data-bind="css: title, click: $parent.listClickAction.bind($data, $index())" class="palm-one-half lap-one-half">
 						<span class="edit" data-bind="text: title"></span>
 					</li>
 				</ul>
-		<!-- 		<ul id="Location-list-end">
-					<li>
-						|
-					</li>
-				</ul> -->
 			</div>
 		</div>
 
