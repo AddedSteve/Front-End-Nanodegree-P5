@@ -18,28 +18,28 @@
 			<div class="grid__item one-whole">
 				<header>
 					<h2>
-						Google Map - Frontend Project
+						London Attractions
 					</h2>
 				</header>
 			</div>
 		</div>
 		<div class="grid">
 			<div class="grid__item one-whole palm-one-whole" id="UI">
-				<h3>Local Attractions</h3>
-				<input placeholder="Search…" type="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+				<h3>Search Locations</h3>
+				<input placeholder="Search…" type="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" class="palm-one-whole lap-one-whole">
 				<ul id="Location-list" data-bind="foreach: filteredLocations">
-					<li>
+					<!-- <li>
 						|
-					</li>
-					<li data-bind="css: title, click: $parent.listClickAction.bind($data, $index())">
+					</li> -->
+					<li data-bind="css: title, click: $parent.listClickAction.bind($data, $index())" class="palm-one-half lap-one-half">
 						<span class="edit" data-bind="text: title"></span>
 					</li>
 				</ul>
-				<ul id="Location-list-end">
+		<!-- 		<ul id="Location-list-end">
 					<li>
 						|
 					</li>
-				</ul>
+				</ul> -->
 			</div>
 		</div>
 

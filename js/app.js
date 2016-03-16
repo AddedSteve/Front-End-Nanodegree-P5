@@ -1,63 +1,39 @@
 var map;
 var markers = [];
-var clientID = "IQDJFYLUCO1UJ45322HIZZOVQWAQCEJ5NQHWP30X4IJ0RL5G";
-var clientSecret = "2DWL5WIZLGY44PN54M5CC0WUN0FD1OA1ULJYO0N322B5AXYV";
 
-var cityData = [];
-
-var config = {
-    apiKey: 'IQDJFYLUCO1UJ45322HIZZOVQWAQCEJ5NQHWP30X4IJ0RL5G',
-    authUrl: 'https://foursquare.com/',
-    apiUrl: 'https://api.foursquare.com/'
-  };
-
-// $.getJSON('https://api.foursquare.com/v2/venues/search?ll=40.7,-74' +
-//     '&query=mcdonalds&client_id=' + clientID + 
-//     '&client_secret=' + clientSecret,
-
-//     function(data) {
-//         $.each(data.response.venues, function(i,venues){
-//             console.log(venues.name);
-//        });
-// });
-
-var foursquare = function (data, callback) {
-    //foursqaure
+// Declare function which will be used to interact with Foursquare API to retrieve third-party Location information.
+var fetchFourSquareInfo = function (data, callback) {
     var clientId = "IQDJFYLUCO1UJ45322HIZZOVQWAQCEJ5NQHWP30X4IJ0RL5G";
     var clientSecret = "2DWL5WIZLGY44PN54M5CC0WUN0FD1OA1ULJYO0N322B5AXYV";
-    var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=51.45889,0.13946&query=" + 
+    var url = "https://api.foursquare.com/v2/venues/search?ll=51.45889,0.13946&query=" + 
     data.title() + "&client_id=" + clientId + '&client_secret=' + clientSecret + "&v=20160309";
-    //    console.log(foursquareUrl);
-       // console.log(data);
 
     $.ajax({
-        url: foursquareUrl,
+        url: url,
         dataType: 'json',
         data: "",
+        // If data is retrieved successfully, process the data in the desired callback function.
         success: function (data) {
             callback(null, data);
         },
         error: function (e) {
-            //here we are handling errors incase foursquare fails
+        // If data is not retrieved successfully, alert the use to the error.
             callback(e);
-            alert("failed to load foursquare");
+            alert("Foursquare data was not retrieved correctly.");
         }
     });
-
 };
 
+// Declare function to initialise the Google Map on the screen and center on London.
 function initMap () {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 51.514573, lng: -0.127846},
     zoom: 15
   });
-
-  
 }
-
 window.onload = initMap();
 
-// represent a single Location item
+// Represent a single Location item with title, position, label, and prepare a variable for City information.
 var Location = function (title, position, label) {
     this.title = ko.observable(title);
     this.position = ko.observableArray(position);
@@ -65,6 +41,7 @@ var Location = function (title, position, label) {
     this.cityLocation = "tbd";
 };
 
+// Create 5 unique locations and keep them in an array.
 var Locations = [
     new Location("All Star Lanes", [51.519879, -0.122544]),
     new Location("Apple Store", [51.514270, -0.141909]),
@@ -73,18 +50,18 @@ var Locations = [
     new Location("Hamleys", [51.513423, -0.140100])
 ];
 
-// our main view model
+// Setup the ViewModel for the application.
 var viewModel = {
 
-    // map array of passed in Locations to an observableArray of Location objects
+    // Map an array of passed in Locations to an observableArray of filtered Location objects.
+    // Also prepare for an observable array of markers to be used on the map.
+    // Initially, no filter is applied.
     filteredLocations: ko.observableArray(Locations.slice()),
-
     filteredMarkers: ko.observableArray(),
-
     query: ko.observable(''),
 
+    // Create Search functionality to update the filteredlocations depending on values in Input.
     search: function(value) {
-        // remove all the current locations, which removes them from the view
         viewModel.filteredLocations.removeAll();
         viewModel.setMapOnAll(null);
         viewModel.filteredMarkers.removeAll();
@@ -97,8 +74,9 @@ var viewModel = {
         viewModel.applyMarkers();
       },
 
+    // Create function to create a Map Marker for each filtered Location along with InfoWindows, 
+    // animmations, and click listeners.
     applyMarkers: function(filteredLocations) {
-
         viewModel.filteredLocations().forEach(function (Location) {
             var self = Location;
         // set even if value is the same, as subscribers are not notified in that case
@@ -113,7 +91,8 @@ var viewModel = {
                   content: 'tbd'
             });
 
-            foursquare(self, function (e, data){
+            // Make a call to FourSquare API fetch function to populate the infowwindow with City info.
+            fetchFourSquareInfo(self, function (e, data){
 
                 if (e) {
                     alert("foursquare failed");
@@ -131,8 +110,8 @@ var viewModel = {
                       '</div>');
                 }
             });
-            // console.log(cityForLocation);
 
+            // Add click listeners to Map markers and declare actions.
             self.marker.addListener('click', function toggleBounce() {
               self.infowindow.open(map, self.marker);
               if (self.marker.getAnimation() !== null) {
@@ -146,33 +125,26 @@ var viewModel = {
             
         })
         viewModel.setMapOnAll(map);
-
     },
 
+    // If a list item element is clicked, animate the related map marker.
     listClickAction: function (i) {
-        console.log(i);
-        
-        
+        viewModel.filteredLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){ viewModel.filteredLocations()[i].marker.setAnimation(null); }, 750);
     },
 
+    // Apply all created map markers to the Google map initialised in the webpage.
     setMapOnAll: function(map) {
 
         for (var i = 0; i < viewModel.filteredMarkers().length; i++) {
             viewModel.filteredMarkers()[i].setMap(map);
         }
-    },
-
-    getWikipediaInformation: function(subject){
-        
     }
 };
 
-// bind a new instance of our view model to the page
-
+// Initialise the ViewModel and Knockout bindings.
 viewModel.query.subscribe(viewModel.search);
 
 viewModel.applyMarkers(viewModel.filteredLocations());
-
-viewModel.getWikipediaInformation();
 
 ko.applyBindings(viewModel);
