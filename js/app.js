@@ -61,6 +61,8 @@ var viewModel = {
     query: ko.observable(''),
 
     // Create Search functionality to update the filteredlocations depending on values in Input.
+    // http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ was referred to as an example of 
+    // a way to search filter using knockout.
     search: function(value) {
         viewModel.filteredLocations.removeAll();
         viewModel.setMapOnAll(null);
